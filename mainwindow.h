@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTableWidgetItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,6 +21,7 @@ public:
 private slots:
     void addTask();
     void removeTask();
+    void handleItemChanged(QTableWidgetItem *item);
 
 
 private:
