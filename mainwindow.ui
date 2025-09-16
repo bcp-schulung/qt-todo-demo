@@ -31,6 +31,38 @@
            <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
           </property>
           <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLineEdit" name="lineEditSearch"/>
+            </item>
+            <item>
+             <widget class="QDateTimeEdit" name="dateFrom"/>
+            </item>
+            <item>
+             <widget class="QDateTimeEdit" name="dateTo"/>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboDoneFilter">
+              <item>
+               <property name="text">
+                <string>tr(ALL)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>tr(Done only)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>tr(Not done)</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
            <widget class="QTableView" name="table"/>
           </item>
           <item>

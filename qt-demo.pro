@@ -13,12 +13,14 @@ SOURCES += \
     mainwindow.cpp \
     todo.cpp \
     todomodel.cpp \
+    todoproxymodel.cpp \
     todoutil.cpp
 
 HEADERS += \
     mainwindow.h \
     todo.h \
     todomodel.h \
+    todoproxymodel.h \
     todoutil.h
 
 FORMS += \

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "todo.h"
 #include "todomodel.h"
+#include "todoproxymodel.h"
 #include "todoutil.h"
 #include "ui_mainwindow.h"
 #include <QRandomGenerator>
@@ -12,9 +13,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    auto *model = new TodoModel();
+    model = new TodoModel(this);
+    proxy = new TodoProxyModel(this);
+    proxy->setSourceModel(model);
 
-    ui->table->setModel(model);
+    ui->table->setModel(proxy);
+    ui->table->setSortingEnabled(true);
     ui->table->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
     ui->table->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->table->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -40,9 +44,6 @@ void MainWindow::addTask() {
     if (taskText.isEmpty())
         return;
 
-    auto *model = qobject_cast<TodoModel*>(ui->table->model());
-    if (!model) return;
-
     Todo *todo = new Todo(taskText);
     model->addTodo(todo);
 
@@ -65,9 +66,6 @@ void MainWindow::onActionGenerateTriggered()
 {
     int n = QRandomGenerator::global()->bounded(1000, 10001);
     QList<Todo*> todos = TodoUtil::generateTodos(n);
-
-    auto *model = qobject_cast<TodoModel*>(ui->table->model());
-    if (!model) return;
 
     model->addTodos(todos);
 

@@ -1,6 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "todomodel.h"
+#include "todoproxymodel.h"
+
 #include <QMainWindow>
 #include <QTableWidgetItem>
 
@@ -25,5 +28,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    TodoModel *model;
+    TodoProxyModel *proxy;
 };
 #endif // MAINWINDOW_H
