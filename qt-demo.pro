@@ -14,6 +14,7 @@ SOURCES += \
     todo.cpp \
     todomodel.cpp \
     todoproxymodel.cpp \
+    todorepository.cpp \
     todoutil.cpp
 
 HEADERS += \
@@ -21,6 +22,7 @@ HEADERS += \
     todo.h \
     todomodel.h \
     todoproxymodel.h \
+    todorepository.h \
     todoutil.h
 
 FORMS += \
@@ -35,3 +37,6 @@ CONFIG += embed_translations
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/todos.db

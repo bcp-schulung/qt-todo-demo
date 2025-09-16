@@ -1,6 +1,7 @@
 #ifndef TODOUTIL_H
 #define TODOUTIL_H
 
+#include "qsqldatabase.h"
 #include "todo.h"
 
 
@@ -10,7 +11,7 @@ public:
     TodoUtil() = default;
 
     static QList<Todo*> generateTodos(int count);
-
+    static bool initDatabase(QSqlDatabase db);
 private:
     static QString randomLorem(int words = 6);
     static QDateTime randomDateTime();

@@ -27,9 +27,13 @@ public:
     bool getDone() const;
     void setDone(bool newDone);
 
+    QString getId() const;
+    void setId(const QString &newId);
+
 signals:
 
 private:
+    QString id;
     QString text;
     bool    done;
     QDateTime created;

@@ -1,5 +1,6 @@
 #include "todoutil.h"
 #include <QRandomGenerator>
+#include <QSqlQuery>
 
 QString TodoUtil::randomLorem(int words)
 {
@@ -50,4 +51,30 @@ QList<Todo*> TodoUtil::generateTodos(int count)
         todos << todo;
     }
     return todos;
+}
+
+bool TodoUtil::initDatabase(QSqlDatabase db)
+{
+    if(!db.open()){
+        qDebug() << "Error: Unable to open database";
+        return false;
+    }
+
+    QSqlQuery query;
+    QString createTable =
+        "CREATE TABLE IF NOT EXISTS todos ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "text TEXT NOT NULL,"
+        "done INTEGER NOT NULL,"
+        "created DATETIME NOT NULL,"
+        "updated DATETIME NOT NULL"
+        ")";
+
+    if(!query.exec(createTable)){
+        qDebug() << "Error creating todo table";
+        return false;
+    }
+
+    qDebug() << "Database initialized successfully.";
+    return true;
 }

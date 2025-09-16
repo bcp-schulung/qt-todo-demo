@@ -1,6 +1,8 @@
 #ifndef TODOMODEL_H
 #define TODOMODEL_H
 
+#include "todorepository.h"
+
 #include <QAbstractTableModel>
 #include <todo.h>
 
@@ -9,7 +11,7 @@ class TodoModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    explicit TodoModel(QObject *parent = nullptr);
+    explicit TodoModel(QSqlDatabase *db, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -28,9 +30,12 @@ public:
     QDateTime maxCreated() const;
     QDateTime minUpdated() const;
     QDateTime maxUpdated() const;
+    void reload();
 
 private:
-    QList<Todo*> todos;
+    TodoRepository *repo;
+    QList<Todo*> m_todos;
+
 signals:
 };
 

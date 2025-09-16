@@ -3,8 +3,8 @@
 
 #include "todomodel.h"
 #include "todoproxymodel.h"
-
 #include <QMainWindow>
+#include <QSqlDatabase>
 #include <QTableWidgetItem>
 
 QT_BEGIN_NAMESPACE
@@ -31,5 +31,6 @@ private:
     Ui::MainWindow *ui;
     TodoModel *model;
     TodoProxyModel *proxy;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 };
 #endif // MAINWINDOW_H

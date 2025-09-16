@@ -12,8 +12,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //DB
+    db.setDatabaseName("todos.db");
+    if(!db.open()){
+        qDebug() << "Error: unable to open database";
+    } else{
+        qDebug() << "Database opened successfully!";
+    }
 
-    model = new TodoModel(this);
+    TodoUtil::initDatabase(db);
+
+    model = new TodoModel(&db, this);
     proxy = new TodoProxyModel(this);
     proxy->setSourceModel(model);
 
@@ -24,10 +33,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->table->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
     ui->table->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->table->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    ui->table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    ui->table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    ui->table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
     ui->table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    ui->table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+
+
+
 
     connect(ui->createButton, &QPushButton::clicked, this, &MainWindow::addTask);
     connect(ui->deleteButton, &QPushButton::clicked, this, &MainWindow::removeTask);
@@ -49,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    db.close();
     delete ui;
 }
 
@@ -91,9 +105,6 @@ void MainWindow::addTask() {
 }
 
 void MainWindow::removeTask() {
-    auto *model = qobject_cast<TodoModel*>(ui->table->model());
-    if (!model) return;
-
     QModelIndexList selection = ui->table->selectionModel()->selectedRows();
     if (selection.isEmpty())
         return;

@@ -39,3 +39,13 @@ void Todo::setDone(bool newDone)
 {
     done = newDone;
 }
+
+QString Todo::getId() const
+{
+    return id;
+}
+
+void Todo::setId(const QString &newId)
+{
+    id = newId;
+}
