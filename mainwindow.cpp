@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "todo.h"
+#include "todomodel.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -8,15 +9,19 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->table->setColumnCount(3);
-    QStringList headers;
-    headers << "Task" << "Created" << "Updated";
-    ui->table->setHorizontalHeaderLabels(headers);
-    ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    auto *model = new TodoModel();
+
+    ui->table->setModel(model);
+    ui->table->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
+    ui->table->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->table->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    ui->table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    ui->table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    ui->table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
 
     connect(ui->createButton, &QPushButton::clicked, this, &MainWindow::addTask);
     connect(ui->deleteButton, &QPushButton::clicked, this, &MainWindow::removeTask);
-    connect(ui->table, &QTableWidget::itemChanged, this, &MainWindow::handleItemChanged);
 }
 
 MainWindow::~MainWindow()
@@ -25,42 +30,29 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::addTask() {
-    QString taskText = ui->lineEdit->text();
-    Todo todo(taskText);
+    QString taskText = ui->lineEdit->text().trimmed();
 
-    int row = ui->table->rowCount();
-    ui->table->insertRow(row);
+    if (taskText.isEmpty())
+        return;
 
-    ui->table->blockSignals(true);
+    auto *model = qobject_cast<TodoModel*>(ui->table->model());
+    if (!model) return;
 
-    ui->table->setItem(row, 0, new QTableWidgetItem(todo.getText()));
-    ui->table->setItem(row, 1, new QTableWidgetItem(todo.getCreated().toString("yyyy-MM-dd hh:mm:ss")));
-    ui->table->setItem(row, 2, new QTableWidgetItem(todo.getUpdated().toString("yyyy-MM-dd hh:mm:ss")));
+    Todo *todo = new Todo(taskText);
+    model->addTodo(todo);
 
-    ui->table->blockSignals(false);
-
-    qDebug() << "Task created:" << todo.getText();
     ui->lineEdit->clear();
 }
 
 void MainWindow::removeTask() {
-    int currentRow = ui->table->currentRow();
-    if (currentRow >= 0) {
-        ui->table->removeRow(currentRow);
-        qDebug() << "Task removed at row" << currentRow;
-    } else {
-        qDebug() << "No task selected to remove!";
-    }
+    auto *model = qobject_cast<TodoModel*>(ui->table->model());
+    if (!model) return;
+
+    QModelIndexList selection = ui->table->selectionModel()->selectedRows();
+    if (selection.isEmpty())
+        return;
+
+    int row = selection.first().row();
+    model->removeTodoAt(row);
 }
 
-void MainWindow::handleItemChanged(QTableWidgetItem *item)
-{
-    int row = item->row();
-    int col = item->column();
-
-    if(col == 0){
-        QString now = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-        ui->table->setItem(row, 2, new QTableWidgetItem(now));
-        qDebug() << "Row: " << row << "now updated at" << now;
-    }
-}

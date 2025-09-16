@@ -21,8 +21,6 @@ public:
 private slots:
     void addTask();
     void removeTask();
-    void handleItemChanged(QTableWidgetItem *item);
-
 
 private:
     Ui::MainWindow *ui;

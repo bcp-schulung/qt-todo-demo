@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    todo.cpp
+    todo.cpp \
+    todomodel.cpp
 
 HEADERS += \
     mainwindow.h \
-    todo.h
+    todo.h \
+    todomodel.h
 
 FORMS += \
     mainwindow.ui
