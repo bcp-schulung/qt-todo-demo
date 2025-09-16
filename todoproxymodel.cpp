@@ -12,17 +12,10 @@ void TodoProxyModel::setSearchText(const QString &text)
     invalidateFilter();
 }
 
-void TodoProxyModel::setCreatedFilter(const QDateTime &from, const QDateTime &to)
+void TodoProxyModel::setDateRange(const QDateTime &from, const QDateTime &to)
 {
     createdFrom = from;
-    createdTo = to;
-    invalidateFilter();
-}
-
-void TodoProxyModel::setUpdatedFilter(const QDateTime &from, const QDateTime &to)
-{
-    updatedFrom = from;
-    updatedTo = to;
+    createdTo   = to;
     invalidateFilter();
 }
 
@@ -48,17 +41,15 @@ bool TodoProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
     if (!searchText.isEmpty() && !todoText.contains(searchText, Qt::CaseInsensitive))
         return false;
 
-    // Created filter
-    if (createdFrom.isValid() && created < createdFrom)
-        return false;
-    if (createdTo.isValid() && created > createdTo)
-        return false;
-
-    // Updated filter
-    if (updatedFrom.isValid() && updated < updatedFrom)
-        return false;
-    if (updatedTo.isValid() && updated > updatedTo)
-        return false;
+    // Unified Date filter (applies to both created & updated)
+    if (createdFrom.isValid()) {
+        if (created < createdFrom && updated < createdFrom)
+            return false;
+    }
+    if (createdTo.isValid()) {
+        if (created > createdTo && updated > createdTo)
+            return false;
+    }
 
     // Done filter
     if (doneMode == 1 && !todoDone) return false;   // only done

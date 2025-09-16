@@ -24,6 +24,11 @@ public:
     void toggleDoneTodo(int row);
     Todo* getTodoAt(int row);
 
+    QDateTime minCreated() const;
+    QDateTime maxCreated() const;
+    QDateTime minUpdated() const;
+    QDateTime maxUpdated() const;
+
 private:
     QList<Todo*> todos;
 signals:

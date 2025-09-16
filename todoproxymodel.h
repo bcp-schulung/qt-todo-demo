@@ -12,8 +12,7 @@ public:
     explicit TodoProxyModel(QObject *parent = nullptr);
 
     void setSearchText(const QString &text);
-    void setCreatedFilter(const QDateTime &from, const QDateTime &to);
-    void setUpdatedFilter(const QDateTime &from, const QDateTime &to);
+    void setDateRange(const QDateTime &from, const QDateTime &to);
     void setDoneFilter(int mode);
 
 protected:

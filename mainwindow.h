@@ -25,6 +25,7 @@ private slots:
     void addTask();
     void removeTask();
     void onActionGenerateTriggered();
+    void updateDateFilters();
 
 private:
     Ui::MainWindow *ui;

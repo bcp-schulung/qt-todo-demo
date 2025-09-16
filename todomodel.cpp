@@ -143,3 +143,39 @@ Todo* TodoModel::getTodoAt(int row)
 {
     return (row >= 0 && row < todos.size()) ? todos[row] : nullptr;
 }
+
+QDateTime TodoModel::minCreated() const {
+    if (todos.isEmpty()) return QDateTime();
+    QDateTime min = todos.first()->getCreated();
+    for (auto *t : todos)
+        if (t->getCreated() < min)
+            min = t->getCreated();
+    return min;
+}
+
+QDateTime TodoModel::maxCreated() const {
+    if (todos.isEmpty()) return QDateTime();
+    QDateTime max = todos.first()->getCreated();
+    for (auto *t : todos)
+        if (t->getCreated() > max)
+            max = t->getCreated();
+    return max;
+}
+
+QDateTime TodoModel::minUpdated() const {
+    if (todos.isEmpty()) return QDateTime();
+    QDateTime min = todos.first()->getUpdated();
+    for (auto *t : todos)
+        if (t->getUpdated() < min)
+            min = t->getUpdated();
+    return min;
+}
+
+QDateTime TodoModel::maxUpdated() const {
+    if (todos.isEmpty()) return QDateTime();
+    QDateTime max = todos.first()->getUpdated();
+    for (auto *t : todos)
+        if (t->getUpdated() > max)
+            max = t->getUpdated();
+    return max;
+}
