@@ -21,6 +21,7 @@ public:
 private slots:
     void addTask();
     void removeTask();
+    void onActionGenerateTriggered();
 
 private:
     Ui::MainWindow *ui;

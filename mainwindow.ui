@@ -76,8 +76,20 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menutr_Menu">
+    <property name="title">
+     <string>tr(Menu)</string>
+    </property>
+    <addaction name="actionGenerate"/>
+   </widget>
+   <addaction name="menutr_Menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionGenerate">
+   <property name="text">
+    <string>tr(Generate)</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

@@ -19,6 +19,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
     void addTodo(Todo *todo);
+    void addTodos(const QList<Todo*> &todos);
     void removeTodoAt(int row);
     void toggleDoneTodo(int row);
     Todo* getTodoAt(int row);

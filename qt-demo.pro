@@ -12,12 +12,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     todo.cpp \
-    todomodel.cpp
+    todomodel.cpp \
+    todoutil.cpp
 
 HEADERS += \
     mainwindow.h \
     todo.h \
-    todomodel.h
+    todomodel.h \
+    todoutil.h
 
 FORMS += \
     mainwindow.ui

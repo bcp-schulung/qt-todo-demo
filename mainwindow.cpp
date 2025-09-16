@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 #include "todo.h"
 #include "todomodel.h"
+#include "todoutil.h"
 #include "ui_mainwindow.h"
+#include <QRandomGenerator>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->createButton, &QPushButton::clicked, this, &MainWindow::addTask);
     connect(ui->deleteButton, &QPushButton::clicked, this, &MainWindow::removeTask);
+
+    connect(ui->actionGenerate, &QAction::triggered, this, &MainWindow::onActionGenerateTriggered);
 }
 
 MainWindow::~MainWindow()
@@ -54,5 +59,18 @@ void MainWindow::removeTask() {
 
     int row = selection.first().row();
     model->removeTodoAt(row);
+}
+
+void MainWindow::onActionGenerateTriggered()
+{
+    int n = QRandomGenerator::global()->bounded(1000, 10001);
+    QList<Todo*> todos = TodoUtil::generateTodos(n);
+
+    auto *model = qobject_cast<TodoModel*>(ui->table->model());
+    if (!model) return;
+
+    model->addTodos(todos);
+
+    QMessageBox::information(this, "Done", QString("Generated %1 todos").arg(n));
 }
 

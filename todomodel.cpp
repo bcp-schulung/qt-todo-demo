@@ -96,6 +96,22 @@ void TodoModel::addTodo(Todo *todo)
     endInsertRows();
 }
 
+void TodoModel::addTodos(const QList<Todo*> &list)
+{
+    if (list.isEmpty())
+        return;
+
+    int startRow = todos.size();
+    int endRow = startRow + list.size() - 1;
+
+    beginInsertRows(QModelIndex(), startRow, endRow);
+    for (Todo *t : list) {
+        todos.append(t);
+    }
+    endInsertRows();
+}
+
+
 void TodoModel::removeTodoAt(int row)
 {
     if (row < 0 || row >= todos.size()) {
