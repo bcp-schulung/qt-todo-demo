@@ -29,3 +29,13 @@ void Todo::setUpdated(const QDateTime &newUpdated)
 {
     updated = newUpdated;
 }
+
+bool Todo::getDone() const
+{
+    return done;
+}
+
+void Todo::setDone(bool newDone)
+{
+    done = newDone;
+}

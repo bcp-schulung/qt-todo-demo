@@ -11,6 +11,7 @@ class Todo : public QObject
 public:
     Todo(const QString &text)
         : text(text),
+        done(false),
         created(QDateTime::currentDateTime()),
         updated(QDateTime::currentDateTime()) {}
 
@@ -23,10 +24,14 @@ public:
     QDateTime getUpdated() const;
     void setUpdated(const QDateTime &newUpdated);
 
+    bool getDone() const;
+    void setDone(bool newDone);
+
 signals:
 
 private:
     QString text;
+    bool    done;
     QDateTime created;
     QDateTime updated;
 };
