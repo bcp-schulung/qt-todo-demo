@@ -25,6 +25,7 @@ private slots:
     void addTask();
     void removeTask();
     void onActionGenerateTriggered();
+    void streamLoadTodos(int count);
     void updateDateFilters();
 
 private:

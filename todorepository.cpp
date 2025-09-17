@@ -81,3 +81,28 @@ QList<Todo *> TodoRepository::loadAll()
 
     return todos;
 }
+
+// NEW: Streaming batch loader
+QList<Todo *> TodoRepository::loadBatch(int offset, int batchSize)
+{
+    QList<Todo*> todos;
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, text, done, created, updated FROM todos LIMIT :limit OFFSET :offset");
+    query.bindValue(":limit", batchSize);
+    query.bindValue(":offset", offset);
+
+    if (!query.exec()) {
+        qDebug() << "Failed to load todos batch";
+        return todos;
+    }
+
+    while (query.next()) {
+        Todo *todo = new Todo(query.value("text").toString());
+        todo->setDone(query.value("done").toInt() == 1);
+        todo->setCreated(query.value("created").toDateTime());
+        todo->setUpdated(query.value("updated").toDateTime());
+        todo->setId(query.value("id").toString());
+        todos.append(todo);
+    }
+    return todos;
+}

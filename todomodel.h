@@ -31,12 +31,15 @@ public:
     QDateTime minUpdated() const;
     QDateTime maxUpdated() const;
     void reload();
+    void clearTodos();
+
+
+    TodoRepository *repo;
 
 public slots:
-    void addTodosBatch(const QList<Todo*>& batch);
+    void addTodosBatch(const QList<Todo*>& batch, bool persist = false);
 
 private:
-    TodoRepository *repo;
     QList<Todo*> m_todos;
 
 signals:

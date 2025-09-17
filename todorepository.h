@@ -15,6 +15,7 @@ public:
     bool update(const Todo &todo);
     bool remove(const Todo &todo);
     QList<Todo*> loadAll();
+    QList<Todo *> loadBatch(int offset, int batchSize);
 
 private:
     QSqlDatabase m_db;

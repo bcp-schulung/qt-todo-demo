@@ -18,6 +18,7 @@ SOURCES += \
     todoutil.cpp
 
 HEADERS += \
+    loadworker.h \
     mainwindow.h \
     todo.h \
     todomodel.h \

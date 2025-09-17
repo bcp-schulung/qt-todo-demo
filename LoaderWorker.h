@@ -1,0 +1,4 @@
+#ifndef LOADERWORKER_H
+#define LOADERWORKER_H
+
+#endif // LOADERWORKER_H

@@ -1,3 +1,4 @@
+#include "loadworker.h"
 #include "mainwindow.h"
 #include "todo.h"
 #include "todomodel.h"
@@ -42,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
 
 
-
+    streamLoadTodos(1000);
 
     connect(ui->createButton, &QPushButton::clicked, this, &MainWindow::addTask);
     connect(ui->deleteButton, &QPushButton::clicked, this, &MainWindow::removeTask);
@@ -124,22 +125,43 @@ void MainWindow::onActionGenerateTriggered()
 {
     int n = QRandomGenerator::global()->bounded(1000, 10001);
 
-    QFutureWatcher<QList<Todo*>>* watcher = new QFutureWatcher<QList<Todo*>>(this);
-    connect(watcher, &QFutureWatcher<QList<Todo*>>::finished, this, [=] {
-        QList<Todo*> todos = watcher->result();
+    model->clearTodos();
+    QThread* thread = new QThread();
+    LoaderWorker* worker = new LoaderWorker(model->repo, 500);
+    worker->moveToThread(thread);
 
-        const int batchSize = 1000;
-        for(int i = 0; i < todos.size(); i += batchSize){
-            QList<Todo*> batch = todos.mid(i, batchSize);
-            QMetaObject::invokeMethod(model, "addTodosBatch", Qt::QueuedConnection, Q_ARG(QList<Todo*>, batch));
-        }
-
-        watcher->deleteLater();
+    connect(thread, &QThread::started, [=]() { worker->generate(n); });
+    connect(worker, &LoaderWorker::batchReady, model, &TodoModel::addTodosBatch, Qt::QueuedConnection);
+    connect(worker, &LoaderWorker::finished, thread, &QThread::quit);
+    connect(worker, &LoaderWorker::finished, worker, &LoaderWorker::deleteLater);
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    connect(worker, &LoaderWorker::finished, this, [this, n]() {
         updateDateFilters();
+        QMessageBox::information(this, "Done", QString("Generated %1 todos").arg(n));
     });
 
-    watcher->setFuture(QtConcurrent::run([n](){
-        return TodoUtil::generateTodos(n);
-    }));
+    thread->start();
 }
+
+void MainWindow::streamLoadTodos(int count)
+{
+    model->clearTodos();
+    QThread* thread = new QThread();
+    LoaderWorker* worker = new LoaderWorker(model->repo, 500); // batch size
+    worker->moveToThread(thread);
+
+    connect(thread, &QThread::started, [=]() { worker->load(count); });
+    connect(worker, &LoaderWorker::batchReady, model, &TodoModel::addTodosBatch, Qt::QueuedConnection);
+    connect(worker, &LoaderWorker::finished, thread, &QThread::quit);
+    connect(worker, &LoaderWorker::finished, worker, &LoaderWorker::deleteLater);
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    connect(worker, &LoaderWorker::finished, this, [this]() {
+        updateDateFilters();
+        QMessageBox::information(this, "Done", "Loaded todos.");
+    });
+
+    thread->start();
+}
+
+
 

@@ -131,20 +131,38 @@ void TodoModel::addTodos(const QList<Todo*> &list)
     reload();
 }
 
+void TodoModel::addTodosBatch(const QList<Todo*>& batch, bool persist)
+{
+    if (batch.isEmpty()) return;
+    int startRow = m_todos.size();
+    int endRow = startRow + batch.size() - 1;
+    beginInsertRows(QModelIndex(), startRow, endRow);
+    for (Todo *t : batch) {
+        m_todos.append(t);
+        if (persist) repo->create(*t);
+    }
+    endInsertRows();
+}
+
+void TodoModel::clearTodos()
+{
+    beginResetModel();
+    qDeleteAll(m_todos);
+    m_todos.clear();
+    endResetModel();
+}
 
 void TodoModel::removeTodoAt(int row)
 {
     if (row < 0 || row >= m_todos.size())
         return;
 
-    // Grab the item first
     Todo* todo = m_todos.at(row);
 
     repo->remove(*todo);
 
-    // Now update the model structure between begin/end
     beginRemoveRows(QModelIndex(), row, row);
-    Todo* removed = m_todos.takeAt(row); // removes and returns pointer
+    Todo* removed = m_todos.takeAt(row);
     endRemoveRows();
 
     delete removed;
@@ -206,25 +224,8 @@ QDateTime TodoModel::maxUpdated() const {
     return max;
 }
 
-
 void TodoModel::reload() {
     beginResetModel();
     m_todos = repo->loadAll();
     endResetModel();
-}
-
-void TodoModel::addTodosBatch(const QList<Todo *> &batch)
-{
-    if(batch.isEmpty())
-        return;
-
-    int startRow = m_todos.size();
-    int endRow = startRow + batch.size() - 1;
-
-    beginInsertRows(QModelIndex(), startRow, endRow);
-    for(Todo *t : batch){
-        m_todos.append(t);
-        repo->create(*t);
-    }
-    endInsertRows();
 }
