@@ -14,6 +14,7 @@ SOURCES += \
     mainwindow.cpp \
     piechartwidget.cpp \
     todo.cpp \
+    todobarchartview.cpp \
     todomodel.cpp \
     todoproxymodel.cpp \
     todorepository.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     mainwindow.h \
     piechartwidget.h \
     todo.h \
+    todobarchartview.h \
     todomodel.h \
     todoproxymodel.h \
     todorepository.h \

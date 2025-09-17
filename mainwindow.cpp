@@ -7,6 +7,7 @@
 #include <QRandomGenerator>
 #include <QMessageBox>
 #include <QFutureWatcher>
+#include <TodoBarChartView.h>
 #include <QtConcurrent/QtConcurrent>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -63,6 +64,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(model, &QAbstractItemModel::rowsInserted, this, &MainWindow::updatePieChart);
     connect(model, &QAbstractItemModel::rowsRemoved, this, &MainWindow::updatePieChart);
 
+    connect(model, &QAbstractItemModel::dataChanged, this, &MainWindow::updateView);
+    connect(model, &QAbstractItemModel::modelReset, this, &MainWindow::updateView);
+    connect(model, &QAbstractItemModel::rowsInserted, this, &MainWindow::updateView);
+    connect(model, &QAbstractItemModel::rowsRemoved, this, &MainWindow::updateView);
+
+    updateView();
     updatePieChart();
 }
 
@@ -155,4 +162,13 @@ void MainWindow::updatePieChart()
     pieData << QPair<QString, qreal>("Done", counters.first);
     pieData << QPair<QString, qreal>("Not Done", counters.second);
     ui->widget->setData(pieData);
+}
+
+
+void MainWindow::updateView()
+{
+    auto* chart = new TodoBarChartView();
+    chart->setTodos(model->getTodos());
+
+    ui->layout->addWidget(chart);
 }

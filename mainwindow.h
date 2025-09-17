@@ -27,6 +27,7 @@ private slots:
     void onActionGenerateTriggered();
     void updateDateFilters();
     void updatePieChart();
+    void updateView();
 
 private:
     Ui::MainWindow *ui;

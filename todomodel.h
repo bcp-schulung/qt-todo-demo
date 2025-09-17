@@ -31,6 +31,7 @@ public:
     QDateTime minUpdated() const;
     QDateTime maxUpdated() const;
     void reload();
+    QList<Todo*> getTodos();
 
     QPair<int, int> doneCounters();
 

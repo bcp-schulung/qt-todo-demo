@@ -214,6 +214,11 @@ void TodoModel::reload() {
     endResetModel();
 }
 
+QList<Todo*> TodoModel::getTodos()
+{
+    return m_todos;
+}
+
 QPair<int, int> TodoModel::doneCounters()
 {
     int done = 0, notDone = 0;
