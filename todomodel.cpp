@@ -212,3 +212,19 @@ void TodoModel::reload() {
     m_todos = repo->loadAll();
     endResetModel();
 }
+
+void TodoModel::addTodosBatch(const QList<Todo *> &batch)
+{
+    if(batch.isEmpty())
+        return;
+
+    int startRow = m_todos.size();
+    int endRow = startRow + batch.size() - 1;
+
+    beginInsertRows(QModelIndex(), startRow, endRow);
+    for(Todo *t : batch){
+        m_todos.append(t);
+        repo->create(*t);
+    }
+    endInsertRows();
+}

@@ -32,6 +32,9 @@ public:
     QDateTime maxUpdated() const;
     void reload();
 
+public slots:
+    void addTodosBatch(const QList<Todo*>& batch);
+
 private:
     TodoRepository *repo;
     QList<Todo*> m_todos;

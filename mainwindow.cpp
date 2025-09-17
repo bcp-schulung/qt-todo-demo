@@ -6,6 +6,8 @@
 #include "ui_mainwindow.h"
 #include <QRandomGenerator>
 #include <QMessageBox>
+#include <QFutureWatcher>
+#include <QtConcurrent/QtConcurrent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -121,11 +123,23 @@ void MainWindow::removeTask() {
 void MainWindow::onActionGenerateTriggered()
 {
     int n = QRandomGenerator::global()->bounded(1000, 10001);
-    QList<Todo*> todos = TodoUtil::generateTodos(n);
 
-    model->addTodos(todos);
+    QFutureWatcher<QList<Todo*>>* watcher = new QFutureWatcher<QList<Todo*>>(this);
+    connect(watcher, &QFutureWatcher<QList<Todo*>>::finished, this, [=] {
+        QList<Todo*> todos = watcher->result();
 
-    QMessageBox::information(this, "Done", QString("Generated %1 todos").arg(n));
-    updateDateFilters();
+        const int batchSize = 1000;
+        for(int i = 0; i < todos.size(); i += batchSize){
+            QList<Todo*> batch = todos.mid(i, batchSize);
+            QMetaObject::invokeMethod(model, "addTodosBatch", Qt::QueuedConnection, Q_ARG(QList<Todo*>, batch));
+        }
+
+        watcher->deleteLater();
+        updateDateFilters();
+    });
+
+    watcher->setFuture(QtConcurrent::run([n](){
+        return TodoUtil::generateTodos(n);
+    }));
 }
 
