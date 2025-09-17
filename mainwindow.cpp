@@ -60,6 +60,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->comboDoneFilter, QOverload<int>::of(&QComboBox::currentIndexChanged),
             proxy, &TodoProxyModel::setDoneFilter);
+
+    QList<QPair<QString, qreal>> data = {
+        {"Apple", 30},
+        {"Banana", 20},
+        {"Cherry", 50}
+    };
+
+    ui->widget->setData(data);
 }
 
 MainWindow::~MainWindow()

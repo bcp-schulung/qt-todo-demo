@@ -1,4 +1,5 @@
-QT       += core gui sql
+QT       += core gui sql \
+    charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    piechartwidget.cpp \
     todo.cpp \
     todomodel.cpp \
     todoproxymodel.cpp \
@@ -19,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    piechartwidget.h \
     todo.h \
     todomodel.h \
     todoproxymodel.h \
