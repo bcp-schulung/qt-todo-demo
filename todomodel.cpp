@@ -4,6 +4,7 @@ TodoModel::TodoModel(QSqlDatabase *db, QObject *parent)
     : QAbstractTableModel(parent)
 {
     repo = new TodoRepository(*db);
+
     reload();
 }
 
@@ -211,6 +212,18 @@ void TodoModel::reload() {
     beginResetModel();
     m_todos = repo->loadAll();
     endResetModel();
+}
+
+QPair<int, int> TodoModel::doneCounters()
+{
+    int done = 0, notDone = 0;
+    for (const Todo* t : std::as_const(m_todos)) {
+        if (t->getDone())
+            done++;
+        else
+            notDone++;
+    }
+    return {done, notDone};
 }
 
 void TodoModel::addTodosBatch(const QList<Todo *> &batch)

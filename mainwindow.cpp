@@ -41,9 +41,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
     ui->table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
 
-
-
-
     connect(ui->createButton, &QPushButton::clicked, this, &MainWindow::addTask);
     connect(ui->deleteButton, &QPushButton::clicked, this, &MainWindow::removeTask);
 
@@ -61,13 +58,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->comboDoneFilter, QOverload<int>::of(&QComboBox::currentIndexChanged),
             proxy, &TodoProxyModel::setDoneFilter);
 
-    QList<QPair<QString, qreal>> data = {
-        {"Apple", 30},
-        {"Banana", 20},
-        {"Cherry", 50}
-    };
+    connect(model, &QAbstractItemModel::dataChanged, this, &MainWindow::updatePieChart);
+    connect(model, &QAbstractItemModel::modelReset, this, &MainWindow::updatePieChart);
+    connect(model, &QAbstractItemModel::rowsInserted, this, &MainWindow::updatePieChart);
+    connect(model, &QAbstractItemModel::rowsRemoved, this, &MainWindow::updatePieChart);
 
-    ui->widget->setData(data);
+    updatePieChart();
 }
 
 MainWindow::~MainWindow()
@@ -151,3 +147,12 @@ void MainWindow::onActionGenerateTriggered()
     }));
 }
 
+void MainWindow::updatePieChart()
+{
+    // Get counts from your model
+    QPair<int, int> counters = model->doneCounters();
+    QList<QPair<QString, qreal>> pieData;
+    pieData << QPair<QString, qreal>("Done", counters.first);
+    pieData << QPair<QString, qreal>("Not Done", counters.second);
+    ui->widget->setData(pieData);
+}

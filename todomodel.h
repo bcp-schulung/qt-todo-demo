@@ -32,6 +32,8 @@ public:
     QDateTime maxUpdated() const;
     void reload();
 
+    QPair<int, int> doneCounters();
+
 public slots:
     void addTodosBatch(const QList<Todo*>& batch);
 
