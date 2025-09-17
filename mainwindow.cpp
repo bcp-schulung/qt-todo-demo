@@ -126,5 +126,6 @@ void MainWindow::onActionGenerateTriggered()
     model->addTodos(todos);
 
     QMessageBox::information(this, "Done", QString("Generated %1 todos").arg(n));
+    updateDateFilters();
 }
 
