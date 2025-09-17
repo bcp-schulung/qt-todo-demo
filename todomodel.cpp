@@ -134,18 +134,20 @@ void TodoModel::addTodos(const QList<Todo*> &list)
 
 void TodoModel::removeTodoAt(int row)
 {
-    if (row < 0 || row >= m_todos.size()) {
+    if (row < 0 || row >= m_todos.size())
         return;
-    }
 
-    beginRemoveRows(QModelIndex(), row, row);
+    // Grab the item first
+    Todo* todo = m_todos.at(row);
 
-    Todo *todo = getTodoAt(row);
     repo->remove(*todo);
-    m_todos.removeAt(row);
-    reload();
 
+    // Now update the model structure between begin/end
+    beginRemoveRows(QModelIndex(), row, row);
+    Todo* removed = m_todos.takeAt(row); // removes and returns pointer
     endRemoveRows();
+
+    delete removed;
 }
 
 void TodoModel::toggleDoneTodo(int row)

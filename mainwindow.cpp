@@ -109,10 +109,13 @@ void MainWindow::removeTask() {
     if (selection.isEmpty())
         return;
 
-    updateDateFilters();
+    QModelIndex proxyIndex = selection.first();
+    // Map from proxy index to source model index
+    QModelIndex sourceIndex = proxy->mapToSource(proxyIndex);
+    int sourceRow = sourceIndex.row();
+    model->removeTodoAt(sourceRow);
 
-    int row = selection.first().row();
-    model->removeTodoAt(row);
+    updateDateFilters();
 }
 
 void MainWindow::onActionGenerateTriggered()
